@@ -1,123 +1,125 @@
-# 0100: Tech Stack Options
+# 0100: Tech Stack Options & Recommendations
 
-This document outlines the various technology choices available for building Operion. Each choice has its own set of advantages and disadvantages.
+This document outlines the various technology choices available for building Operion, provides a recommendation for each category, and explains the reasoning.
 
 ---
 
 ## 1. Core Language (Backend & Controller)
 
-This is the language that will be used to write the main application logic, including the controller, system hooks, and database interactions.
+This is the language for the main application logic, controller, system hooks, and database interactions.
 
-### Option A: Python
+### Tabular Comparison
 
--   **Description:** A high-level, interpreted language known for its ease of use and extensive library support, especially in AI/ML.
--   **Pros:**
-    -   **Fastest for AI:** Unmatched ecosystem for AI and machine learning. Integrating with any kind of AI model is easiest in Python.
-    -   **Easy to Learn & Write:** Simple syntax allows for rapid development and iteration.
-    -   **Mature Libraries:** Robust libraries exist for OS interaction on all platforms (`pywin32`, `pyobjc`, `python-xlib`).
--   **Cons:**
-    -   **Performance:** As an interpreted language, it is significantly slower and more memory-intensive than compiled languages like Rust or Go. This is a major concern for a lightweight system utility.
-    -   **Distribution:** Packaging a Python app into a standalone executable can be complex and result in a large file size.
+| Criteria              | Python                               | **Rust (Recommended)**                 | Go                                     |
+| --------------------- | ------------------------------------ | -------------------------------------- | -------------------------------------- |
+| **Performance**       |  низкой                           | **Excellent**                          | Good                                   |
+| **Memory Usage**      | High                                 | **Very Low**                           | Low                                    |
+| **Safety**            | Okay (Dynamically Typed)             | **Excellent (Compile-time)**           | Good (Garbage Collected)               |
+| **Learning Curve**    | Easy                                 | **Hard**                               | Medium                                 |
+| **AI/ML Ecosystem**   | Excellent                            | **Good & Growing**                     | Fair                                   |
+| **UI Framework Synergy** | Poor                                 | **Excellent (with Tauri)**             | Poor                                   |
+| **Best For**          | Rapid Prototyping, AI tasks          | **Performant & Safe System Utilities** | Network Services, CLI tools            |
 
-### Option B: Rust
+### Options Analysis
 
+#### Option A: Python
+-   **Description:** A high-level, interpreted language known for its ease of use and extensive library support.
+-   **Pros:** Unmatched AI ecosystem, easy to learn, mature libraries for OS interaction.
+-   **Cons:** Significantly slower and more memory-intensive than compiled alternatives, which is a major drawback for a lightweight system utility.
+
+#### Option B: Rust
 -   **Description:** A modern, compiled language focused on performance, memory safety, and concurrency.
--   **Pros:**
-    -   **Elite Performance:** Speed is on par with C++, and memory usage is low and predictable. Ideal for a system-level tool.
-    -   **Memory Safety:** The compiler guarantees memory safety, preventing crashes and security vulnerabilities common in systems programming.
-    -   **Excellent for UI (Tauri):** Tauri, a leading lightweight UI framework, is built on Rust. This creates a highly cohesive, unified, and performant application.
-    -   **Modern Tooling:** Has a world-class build system and package manager (Cargo).
--   **Cons:**
-    -   **Steep Learning Curve:** Rust's core concepts (ownership, borrowing) can be difficult for beginners to grasp.
-    -   **Slower Development:** Development speed is generally slower than in Python due to the strictness of the compiler.
+-   **Pros:** Elite performance, guaranteed memory safety, first-class tooling, and perfect synergy with the Tauri UI framework.
+-   **Cons:** Steep learning curve, development can be slower than in Python.
 
-### Option C: Go
+#### Option C: Go
+-   **Description:** A simple, compiled language from Google, known for its excellent concurrency support.
+-   **Pros:** Much easier to learn than Rust, great for concurrent tasks, compiles quickly to a single binary.
+-   **Cons:** Less synergy with UI frameworks and its ecosystem for low-level system hooks is less mature than Rust's.
 
--   **Description:** A simple, compiled language created by Google, known for its excellent support for concurrency.
--   **Pros:**
-    -   **Simplicity:** Much easier to learn than Rust.
-    -   **Great Concurrency:** Built-in "goroutines" make it very easy to run background tasks concurrently.
-    -   **Fast Compilation:** Compiles very quickly, and creates single, static binaries.
--   **Cons:**
-    -   **System Hooks:** Interacting with low-level OS APIs is less common and can be more cumbersome than in Rust or Python.
-    -   **No UI Synergy:** Does not have a clear, first-party UI framework like Rust does with Tauri.
+### Recommendation: Rust
+
+**Rust is the clear winner for Operion.** While it has a steeper learning curve, the benefits are immense and directly address the project's core requirements. For a tool that runs constantly in the background and interacts with the OS, performance and memory safety are paramount. Rust provides this without compromise. Most importantly, its seamless integration with Tauri allows us to build the *entire* application—backend, frontend, and build process—within a single, cohesive, and modern ecosystem. This is a decisive advantage that no other language can offer for this project.
 
 ---
 
 ## 2. UI Framework
 
-This is the technology used to build the user interface (the dashboard, mode switcher, widgets, etc.).
+This technology will be used to build the user interface (dashboard, widgets, etc.).
 
-### Option A: Tauri (with Svelte/React/Vue)
+### Tabular Comparison
 
--   **Description:** A framework for building native desktop apps using web technologies. It uses the operating system's native webview instead of bundling a full browser.
--   **Pros:**
-    -   **Extremely Lightweight:** Produces tiny application bundles and has very low RAM usage.
-    -   **High Performance:** Very fast because it's a thin layer over a Rust backend.
-    -   **Modern Web Tech:** Allows you to build beautiful UIs with modern frameworks like Svelte or React.
-    -   **Powerful Features:** Supports transparent windows, multiple windows, and system tray icons, which are needed for "overlaying" the OS.
--   **Cons:**
-    -   Requires knowledge of both web development and Rust (if you choose a Rust core).
+| Criteria          | **Tauri (Recommended)**          | Electron                         |
+| ----------------- | -------------------------------- | -------------------------------- |
+| **Performance**   | **Excellent**                    | Fair                             |
+| **Resource Usage**| **Very Low**                     | High                             |
+| **App Size**      | **Very Small (~2-10 MB)**        | Large (~50-100 MB+)              |
+| **Maturity**      | Good & Growing                   | **Excellent**                    |
+| **Best For**      | **Lightweight Desktop Apps**     | Complex, feature-rich apps       |
 
-### Option B: Electron (with Svelte/React/Vue)
+### Options Analysis
 
--   **Description:** The original framework for building desktop apps with web tech (used by VS Code, Slack, Discord). It bundles a full version of the Chromium web browser.
--   **Pros:**
-    -   **Very Mature:** Extremely stable, well-documented, and has a massive ecosystem.
-    -   **Easy to Use:** If you know Node.js and web development, it's very easy to get started.
--   **Cons:**
-    -   **High Resource Usage:** Famously results in large applications that consume a lot of RAM, which is against our goal of being a "lightweight layer".
+#### Option A: Tauri (with Svelte/React/Vue)
+-   **Description:** A framework for building native desktop apps using web technologies by leveraging the OS's native webview.
+-   **Pros:** Extremely lightweight, high performance, produces tiny app bundles, and has powerful features for creating overlay-style UIs.
+-   **Cons:** Requires knowledge of both web development and Rust (if Rust is the chosen core language).
+
+#### Option B: Electron (with Svelte/React/Vue)
+-   **Description:** The original framework for this purpose (used by VS Code, Slack), which bundles a full Chromium browser.
+-   **Pros:** Very mature, stable, and easy to get started with.
+-   **Cons:** High resource usage and large app size are directly contrary to Operion's goal of being a "lightweight layer".
+
+### Recommendation: Tauri
+
+**Tauri is the ideal choice.** Its philosophy aligns perfectly with Operion's. It delivers the smallest, fastest, and most resource-efficient application possible while still allowing for a beautiful, modern UI to be built with web technologies. Your vision of "overlaying the actual layout of the system" is perfectly served by Tauri's support for transparent, borderless, multi-window applications. The cost of learning the Tauri/Rust integration is a small price to pay for such a massive gain in performance and efficiency.
 
 ---
 
 ## 3. AI Engine
 
-This is the component that will classify content and provide intelligent suggestions.
+This component will classify content and provide intelligent suggestions.
 
-### Option A: Local LLM (via Ollama)
+### Tabular Comparison
 
--   **Description:** The user installs and runs an open-source Large Language Model (like Llama 3 or Phi-3) locally using the Ollama tool. Our application sends HTTP requests to the Ollama server running on `localhost`.
--   **Pros:**
-    -   **Completely Free:** No API costs, ever.
-    -   **100% Private:** No data ever leaves the user's machine.
-    -   **Offline Capable:** Works without an internet connection.
--   **Cons:**
-    -   **User Setup Required:** The user must install and manage Ollama and the models themselves.
-    -   **Performance Dependent on Hardware:** Requires a powerful computer (especially a good GPU) for fast responses.
-    -   **Lower Quality (Potentially):** The quality of the AI responses may not be as high as top-tier cloud models.
+| Criteria                  | **Local LLM (Ollama) (Recommended)** | Cloud LLM (Gemini, etc.)   |
+| ------------------------- | ------------------------------------ | -------------------------- |
+| **Cost**                  | **Free**                             | Potentially Expensive      |
+| **Privacy**               | **Excellent (100% Local)**           | Poor (Data sent to cloud)  |
+| **Offline Capability**    | **Yes**                              | No                         |
+| **User Setup**            | Manual Installation Required         | **Easy (API Key)**         |
+| **Performance**           | Hardware Dependent                   | **Fast & Consistent**      |
+| **Quality**               | Good to Very Good                    | State-of-the-art           |
 
-### Option B: Cloud LLM (Gemini, OpenAI, etc.)
+### Options Analysis
 
--   **Description:** Our application sends API requests over the internet to a commercial AI service.
--   **Pros:**
-    -   **Highest Quality:** Provides state-of-the-art AI capabilities.
-    -   **No User Setup:** Works out-of-the-box as long as the user provides an API key.
--   **Cons:**
-    -   **Costly:** Can become very expensive, which violates a core constraint.
-    -   **Requires Internet:** Does not work offline.
-    -   **Privacy Concerns:** Involves sending user data (e.g., window titles) to a third party.
+#### Option A: Local LLM (via Ollama)
+-   **Description:** The user installs and runs an open-source LLM locally via the Ollama tool. Operion communicates with the local Ollama server.
+-   **Pros:** Completely free, 100% private, and works offline.
+-   **Cons:** Requires manual setup by the user and performance is dependent on the user's hardware.
+
+#### Option B: Cloud LLM (Gemini, OpenAI, etc.)
+-   **Description:** Operion sends API requests to a commercial AI service.
+-   **Pros:** Highest quality responses and easy setup for the user (just an API key).
+-   **Cons:** Can be expensive, requires an internet connection, and involves privacy trade-offs.
+
+### Recommendation: Local LLM (Ollama)
+
+**Ollama is the right choice given your "free forever" constraint.** It completely eliminates cost concerns and provides the strongest possible privacy guarantees for the user, which is a huge selling point for an app that monitors user activity. While it requires a one-time setup for the user, this is a reasonable trade-off. We can provide clear instructions for this setup. The performance and quality of local models are improving at an incredible pace, making this a sustainable and future-proof decision.
 
 ---
 
 ## 4. Database
 
-This is where the application will store the historical activity data.
+This is where the application will store historical activity data.
 
-### Option A: SQLite
+### Tabular Comparison
 
--   **Description:** A self-contained, serverless, file-based SQL database engine.
--   **Pros:**
-    -   **Standard Choice:** The industry standard for local application data.
-    -   **Fast & Reliable:** Extremely fast for this use case.
-    -   **Excellent Language Support:** Supported out-of-the-box in Python and has high-quality libraries in Rust and Go.
--   **Cons:**
-    -   None for this project. It is the ideal choice.
+| Criteria            | **SQLite (Recommended)**     | Plain Text Files (JSON/CSV) |
+| ------------------- | ---------------------------- | --------------------------- |
+| **Query Performance** | **Excellent**                | Very Poor                   |
+| **Reliability**     | **Excellent (Transactional)**| Fair (Prone to corruption)  |
+| **Ease of Use**     | Excellent                    | Deceptively Complex         |
 
-### Option B: Plain Text Files (JSON / CSV)
+### Recommendation: SQLite
 
--   **Description:** Storing data in a series of files, like one JSON file per day.
--   **Pros:**
-    -   **Human-Readable:** Data can be easily inspected with a text editor.
--   **Cons:**
-    -   **Inefficient:** Querying the data (e.g., "how much time did I spend on 'Code' last week?") becomes very slow and complex as the number of files grows.
-    -   **Prone to Corruption:** More fragile than a transactional database like SQLite.
+This is the most straightforward decision. **SQLite is the only professional choice here.** It is purpose-built for this exact scenario. It is fast, transactional (meaning data won't be corrupted if a write is interrupted), and has rock-solid library support in every major language. The "human-readability" of plain text files is a false economy that would quickly lead to massive performance and reliability problems.
