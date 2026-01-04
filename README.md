@@ -5,7 +5,7 @@ Operion is a mode-driven, intelligent operating system *experience* that adapts 
 
 Instead of treating all apps and activities equally, Operion introduces system-wide **modes** that reshape your UI, control app access, and guide user behavior using AI-powered insights — helping you work deeply, rest intentionally, and consume entertainment mindfully.
 
-Operion is built as a lightweight operating layer on top of an existing OS (Linux / Windows / macOS), making it practical, extensible, and user-centric.
+Operion is built as a lightweight operating layer on top of an existing OS, with an initial focus on **Linux**.
 
 ---
 
@@ -28,170 +28,57 @@ Operion optimizes for:
 
 Operion introduces **system-wide modes** that define *how* and *why* your computer behaves at any moment.
 
-### 🧑‍💻 Work Mode
-- Distraction-free environment
-- Only work-related apps accessible
-- Minimal, monochrome UI
-- Notifications suppressed
-- Time-locked sessions
-
-### 😌 Chill Mode
-- Light productivity and recovery
-- Softer UI themes
-- Music and reading-friendly setup
-- Reduced restrictions
-
-### 🎬 Entertainment Mode
-- Intentional leisure
-- Media-centric UI
-- No productivity tracking penalties
-- Guilt-free consumption
-
-Modes affect:
-- App visibility & launch permissions
-- UI themes and layouts
-- Notification behavior
-- System policies
+- **🧑‍💻 Work Mode:** A distraction-free environment for deep focus.
+- **😌 Chill Mode:** For light productivity and mental recovery.
+- **🎬 Entertainment Mode:** For intentional, guilt-free leisure.
 
 ---
 
-## 🔒 App Control & Restrictions
+## ✨ Core Features
 
-Operion enforces focus using **policy-based app access**:
+- **App Control & Restrictions:** Whitelist or blacklist applications and websites based on the current mode.
+- **Activity Monitoring:** Understand how you spend your time with local, privacy-first activity tracking.
+- **AI-Powered Content Awareness:** Uses a local AI to classify content (not just apps) to provide more accurate focus scoring.
+- **Insights & Analytics:** Get actionable insights into your focus, productivity, and distraction patterns.
+- **Calendar-Driven Mode Locking:** Plan your day on a calendar and have Operion automatically lock you into modes to enforce your intentions.
+- **AI Productivity Coach:** Receive a personalized, reflective summary of your day with suggestions for improvement.
 
-- Whitelist / blacklist apps per mode
-- Hide or block distracting apps
-- Restrict specific websites or domains
-- Progressive enforcement:
-  - Warnings → UI dimming → temporary lock
+---
 
-Example:
-```text
-Work Mode:
-✔ VS Code
-✔ Terminal
-✔ Docs
-✖ YouTube
-✖ Instagram
-✖ Games
-⏱️ Activity Monitoring
-```
-Operion continuously monitors system activity to understand how time is spent:
+## 🧰 Tech Stack
 
-- Active applications
-- Foreground window titles
-- Time spent per app
-- Idle vs active time
-- Mode transitions
+Operion is built with a modern, high-performance, and privacy-focused tech stack.
 
-All activity data is stored locally and processed privately.
+- **Core Language:** **Rust** — For a memory-safe, high-performance, and lightweight backend.
+- **UI Framework:** **Tauri** with **Svelte** — To create a beautiful, fast, and resource-efficient desktop UI using web technologies.
+- **AI Engine:** **Ollama** — To run powerful open-source language models locally, ensuring zero cost and 100% privacy.
+- **Database:** **SQLite** — For robust, local, and file-based data storage.
 
-## 🎥 AI-Powered Content Awareness
-Operion uses AI to classify content — not just apps.
+---
 
-For example, when using YouTube:
+## 🚀 Getting Started
 
-- Reads video title and metadata
-- Classifies content as:
-  - Educational
-  - Entertainment
-  - Low-value distraction
+This project is in the early stages of development. All documentation is located in the `/docs` directory.
 
-This enables:
+1.  **Learn the Architecture:** To understand how Operion works, start by reading the documents in `docs/architecture`.
+2.  **Set up your Environment:** Follow the `docs/development_setup/0100_installation_guide.md` to configure your Linux development environment.
+3.  **Learn the Technologies:** If you're new to the tech stack, check out the curated list of tutorials and guides in `docs/development_setup/0200_learning_resources.md`.
 
-- Accurate focus scoring
-- Context-aware restrictions
-- Meaningful insights
-
-## 📊 Insights & Analytics
-Operion provides actionable insights instead of raw stats.
-
-**Daily Insights**
-- Focus score
-- Deep work duration
-- Distraction percentage
-- Mode usage breakdown
-
-**Weekly Insights**
-- Productivity trends
-- Peak focus hours
-- Common distraction patterns
-- Suggested schedule improvements
-
-Example:
-
-“Your focus drops most often between 3–4 PM. Consider scheduling lighter tasks during this window.”
-
-## 🗓️ Calendar-Driven Mode Locking
-Operion integrates planning directly into system behavior.
-
-- Plan your day on a built-in calendar
-- Assign modes to time blocks
-- Automatically lock modes during scheduled intervals
-
-Override requires:
-- Explicit reason
-- Cool-down timer
-
-This removes the need for constant self-control.
-
-## 🔁 Smart Mode Transitions (Advanced)
-Operion can optionally switch modes automatically based on behavior:
-
-- Sustained coding → Work Mode
-- Media apps detected → Entertainment Mode
-- Idle + music → Chill Mode
-
-Manual control always remains available.
-
-## 🧠 AI Productivity Coach
-At the end of each day, Operion generates a reflective summary:
-
-- Planned vs actual work time
-- Focus consistency
-- Distraction sources
-- Personalized suggestions
-
-Example:
-
-“You planned 5 hours of deep work and completed 3.8 hours. Morning sessions showed higher focus.”
-
+---
 ## 🛠️ Architecture Overview
 ```text
 +---------------------------+
 |        Operion UI         |
-|  (Mode Switch, Dashboard) |
+|   (Tauri + Svelte)        |
 +---------------------------+
-            |
+            | (Tauri IPC)
 +---------------------------+
 |     Operion Controller    |
-| (Rules, Policies, Modes)  |
+|   (Rust Core Logic)       |
 +---------------------------+
-            |
-+---------------------------+
-|   System Hooks & Monitors |
-| (Apps, Windows, Activity) |
-+---------------------------+
-            |
-+---------------------------+
-|     AI Insight Engine     |
-| (Classification & Advice) |
-+---------------------------+
+            | (System Events)
++---------------------------+      +---------------------------+
+|   System Hooks & Monitors |----->|     AI Insight Engine     |
+|   (Rust, OS-specific)     |      |   (Ollama Integration)    |
++---------------------------+      +---------------------------+
 ```
-
-## 🧪 MVP Scope
-**Phase 1 (MVP):**
-
-- Manual mode switching
-- App blocking per mode
-- Activity tracking
-- Mode-specific UI themes
-- Daily insights
-- Calendar-based mode locking
-
-**Phase 2 (Advanced):**
-
-- Auto mode switching
-- AI content classification
-- Productivity coach
-- Mental fatigue detection
