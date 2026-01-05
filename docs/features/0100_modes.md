@@ -35,11 +35,31 @@ Chill Mode is for light productivity, recovery, and relaxed activities. It's the
 
 ### 🎬 Entertainment Mode
 
-Entertainment Mode is for intentional, guilt-free leisure. It acknowledges that relaxation and entertainment are important parts of a balanced life.
+Entertainment Mode is for intentional, guilt-free leisure. It acknowledges that relaxation and entertainment and important parts of a balanced life.
 
 -   **Media-Centric UI:** The UI can be configured to prioritize media applications.
 -   **No Productivity Penalties:** Time spent in this mode does not negatively affect your productivity scores.
 -   **Full Access:** All applications and websites are typically available.
+
+### ⚡ Focus Sprint Mode
+
+Focus Sprint Mode is designed for periods of hyper-focused, uninterrupted work, leveraging techniques like the Pomodoro method. It acts as a temporary, highly restrictive state, often initiated from within Work Mode, to help you tackle specific tasks with maximum concentration.
+
+-   **Intense Restrictions:** Even more stringent than standard Work Mode. This might include:
+    -   Allowing only a single, pre-selected application to run.
+    -   Absolute suppression of all notifications, alerts, and interruptions.
+    -   Optional integration with ambient focus soundscapes.
+-   **Time-Boxed Sessions:** Activated for a specific duration (e.g., 25 minutes), after which Operion can automatically guide you into a short break (e.g., switching to Chill Mode for 5 minutes) before returning to your regular Work Mode.
+-   **Automated Workflow:** Removes the mental overhead of managing timers and breaks, allowing you to fully immerse in your task.
+
+### 🚫 Suspended Mode
+
+There are times, such as during an online assessment, a critical video call, or system diagnostics, when you need to guarantee that Operion will not interfere in any way. Suspended Mode is a fail-safe that completely and temporarily pauses all of Operion's functions.
+
+-   **No Interference:** When in Suspended Mode, all features are dormant. There is no application or website blocking.
+-   **No Tracking:** All activity monitoring and journaling prompts are paused to ensure privacy and zero overhead.
+-   **System Default:** All UI themes are reverted to your system's default.
+-   **Full User Control:** This mode gives you an explicit "off switch" for Operion's functionality, ensuring you are always in complete control.
 
 ## Manual Mode Switching
 
