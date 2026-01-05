@@ -45,3 +45,12 @@ The analytics in Operion are designed to be a tool for self-reflection and impro
 -   When am I most productive?
 
 By providing clear, data-driven answers to these questions, Operion empowers you to take control of your digital life.
+
+## Advanced Analytics & Reporting (Future Goal)
+
+To move beyond simple summaries and empower deep self-analysis, the analytics component could be enhanced with more powerful, interactive tools.
+
+1.  **Custom Date Range Filtering:** Allow users to view and analyze their focus data for any custom date range, not just the current day or week.
+2.  **Correlation Analysis:** The AI Insight Engine could proactively identify relationships in a user's habits, such as, "Your focus score is 15% higher on days when you start with a Focus Sprint."
+3.  **Data Export:** Give users the ability to export their raw, anonymized activity data in formats like CSV or JSON, allowing for analysis in external tools and reinforcing the principle of data ownership.
+4.  **"Distraction Score" Learning:** Over time, Operion could learn a nuanced "distraction score" for different applications and websites based on a user's patterns, leading to more accurate focus metrics.
