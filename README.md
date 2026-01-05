@@ -24,24 +24,27 @@ Operion optimizes for:
 
 ---
 
-## 🧠 Core Concept: Modes
+## 🧠 Core Concepts: Modes
 
-Operion introduces **system-wide modes** that define *how* and *why* your computer behaves at any moment.
+Operion's power comes from its system-wide **modes**. Instead of a one-size-fits-all desktop, you can instantly switch between different environments, each with its own rules and purpose.
 
 - **🧑‍💻 Work Mode:** A distraction-free environment for deep focus.
 - **😌 Chill Mode:** For light productivity and mental recovery.
 - **🎬 Entertainment Mode:** For intentional, guilt-free leisure.
+- **⚡ Focus Sprint Mode:** A temporary, high-intensity, single-tasking mode for short bursts of deep work, inspired by the Pomodoro Technique.
+- **🚫 Suspended Mode:** A "hands-off" mode that completely pauses all of Operion's features, guaranteeing zero interference.
+- **✨ Custom Modes:** Create your own modes from scratch (e.g., "Study," "Design," "Reading") with their own specific rules, apps, and UI themes.
 
 ---
 
 ## ✨ Core Features
 
-- **App Control & Restrictions:** Whitelist or blacklist applications and websites based on the current mode.
-- **Activity Monitoring:** Understand how you spend your time with local, privacy-first activity tracking.
-- **AI-Powered Content Awareness:** Uses a local AI to classify content (not just apps) to provide more accurate focus scoring.
-- **Insights & Analytics:** Get actionable insights into your focus, productivity, and distraction patterns.
-- **Calendar-Driven Mode Locking:** Plan your day on a calendar and have Operion automatically lock you into modes to enforce your intentions.
-- **AI Productivity Coach:** Receive a personalized, reflective summary of your day with suggestions for improvement.
+- **Intelligent Browser Protection:** A companion browser extension that understands the content you're viewing. During `Work Mode`, it automatically blurs distracting websites, forcing you to stay on task without needing to block the entire browser.
+- **Task-Driven Calendar:** Integrate your to-do list with the calendar. Link specific tasks to your `Work Mode` blocks and get a gentle, passive reminder of your current objective.
+- **App & Website Control:** Go beyond browser protection with system-wide application whitelists/blacklists tailored to each mode.
+- **Session Review Journaling:** At the end of a work session, Operion prompts you for a quick reflection on your accomplishments and challenges, adding powerful qualitative context to your analytics.
+- **AI Productivity Coach:** At the end of the day, receive a personalized summary that compares your goals with your actual results, providing actionable advice for the next day.
+- **Privacy-First Activity Monitoring:** Understand how you spend your time with a local-only activity monitor. No data ever leaves your machine.
 
 ---
 
