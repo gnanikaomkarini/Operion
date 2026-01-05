@@ -61,6 +61,18 @@ There are times, such as during an online assessment, a critical video call, or 
 -   **System Default:** All UI themes are reverted to your system's default.
 -   **Full User Control:** This mode gives you an explicit "off switch" for Operion's functionality, ensuring you are always in complete control.
 
+## Creating Your Own Modes
+
+Beyond the default modes, Operion is designed to be a personal framework for focus. Users have the power to create, edit, and delete their own modes through a simple configuration file (e.g., `modes.yaml`).
+
+This allows you to tailor Operion to your specific workflows and projects. For example, you could create:
+
+-   A **"Study Mode"** that allows only research websites, a PDF reader, and a word processor.
+-   A **"Design Mode"** that permits Figma and Photoshop but blocks chat applications.
+-   A **"Commute Mode"** that disables all internet-required apps for offline work.
+
+For each custom mode, you can define its name, icon, app/website policies, and UI theme, making the system truly your own.
+
 ## Manual Mode Switching
 
 In the initial version of Operion, you switch between modes manually via the Operion UI (e.g., a simple menu bar app). This is a deliberate design choice. The act of manually switching modes forces you to be intentional about how you are about to spend your time.
