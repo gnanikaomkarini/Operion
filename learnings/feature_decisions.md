@@ -60,3 +60,17 @@ A `stretch_goals` directory was created to house features that are visionary but
 
 ### Reasoning
 The user correctly identified that certain proposed features, like **Physical Environment (IoT) Integration** and **Focus Pacts (Social Accountability)**, depend on external factors (user hardware, network effects) and are not essential for the MVP. Separating these into a "stretch goals" category helps to keep the core project scope manageable while preserving valuable long-term ideas.
+
+---
+
+## 6. Ollama Model Selection - Evaluation of `llava:7b`
+
+### Decision
+While `llama3:8b` is the recommended default, `llava:7b` was deemed a perfectly viable and recommended model, especially if already installed by the user.
+
+### Reasoning
+Upon user inquiry, it was confirmed that the pre-installed `llava:7b` model is suitable for Operion's AI tasks. As a 7-billion parameter language model, its text-processing capabilities are sufficient for:
+-   **Real-time Content Classification:** It can quickly and accurately classify text content from web pages.
+-   **AI Coach Summary Generation:** It can generate good quality summaries, comparable to other 7B models.
+
+Although `llava:7b` is a multimodal (vision-capable) model, this aspect is not utilized by Operion's current browser-extension-based implementation. Its multimodal nature does not impede its performance for our use case. Using an already installed model streamlines the user's setup and reduces the initial barrier to entry, aligning with Operion's user-centric philosophy.
