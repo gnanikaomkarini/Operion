@@ -90,3 +90,11 @@ For the initial release, the recommended default model is **`llama3:8b`**.
 **Reasoning:** The small amount of extra latency for classification is a worthy trade-off for the dramatic increase in quality for the AI Productivity Coach, which is a major user-facing feature. The 8B parameter size is the modern "sweet spot" for powerful local AI on consumer hardware.
 
 However, **`phi-3:mini`** will be documented as the official "lightweight alternative" for users on lower-spec machines or for those who prefer maximum responsiveness above all else. The final choice will always remain in the user's hands via the configuration file.
+
+### Pre-installed Model Considerations: `llava:7b`
+
+If you already have `llava:7b` installed, it is a perfectly viable and recommended option to start with.
+
+-   **Capability:** As a 7-billion parameter language model, `llava:7b` is capable of handling both the real-time content classification and the AI Coach summary generation effectively. Its text-processing capabilities are strong.
+-   **Multimodal Aspect:** While `llava:7b` is a multimodal model (understanding both text and images), Operion will primarily utilize its text-processing features for the current implementation, as the browser extension approach does not require image analysis. The multimodal aspect does not negatively impact its performance for our use case.
+-   **Comparison:** It offers similar performance for classification as `mistral:7b` or `gemma:7b`. For AI Coach summaries, it provides good quality, though `llama3:8b` might offer slightly more nuanced text generation if that becomes a priority.
