@@ -14,6 +14,15 @@ The process is simple:
 2.  **Assign Modes to Time Blocks:** For each block of time, you can assign a mode (e.g., "Work," "Chill"). For example, you might schedule a 2-hour "Work Mode" block in the morning for a critical project.
 3.  **Automatic Mode Locking:** When a scheduled time block begins, Operion automatically switches to the assigned mode and **locks** it.
 
+## Task-Driven Sessions
+
+To enhance focus and provide clarity, the calendar integration is enhanced with a simple task management system. This allows you to associate a specific intention with each scheduled block of time.
+
+1.  **Simple Task List:** A dedicated area in the Operion UI allows you to list your key tasks for the day (e.g., "Finish Q3 report," "Debug login page").
+2.  **Link Tasks to Calendar:** You can drag-and-drop tasks from your list directly onto time blocks in the calendar. A `Work Mode` block now becomes `Work Mode: Finish Q3 report`.
+3.  **Passive Reminder:** When the scheduled session begins, the Operion UI will display a constant, non-intrusive reminder of the current task. This helps you quickly regain focus after an interruption.
+4.  **Richer Analytics:** This data is used by the `AI Productivity Coach` to provide more meaningful insights, comparing not just how long you worked, but what you accomplished versus what you planned.
+
 ## The "Lock"
 
 When a mode is "locked," you cannot easily switch out of it. This creates a powerful commitment device that helps you stick to your plan.
