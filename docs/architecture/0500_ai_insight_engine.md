@@ -53,3 +53,40 @@ class AIProvider:
 -   `SimpleClassifierProvider`: A non-LLM, local provider that uses simpler, traditional machine learning models (or even just keyword matching) for basic classification. This would be very private and lightweight.
 
 The user can select which provider they want to use in the configuration file, and the AI Insight Engine will load the corresponding module. This makes the AI component of Operion highly modular and user-configurable.
+
+## Recommended Ollama Models
+
+Choosing the right local LLM is a critical balance between performance, capability, and hardware requirements. While Operion allows any Ollama model to be used, the following recommendations are based on the specific needs of the AI Insight Engine.
+
+The AI's two primary tasks have competing needs:
+-   **Real-time Content Classification:** Requires a **fast** response to avoid delaying user interactions (like blurring a webpage).
+-   **AI Coach Summary Generation:** Requires a **high-quality, creative** model to generate insightful and human-like text.
+
+### Model Comparison
+
+| Model | Est. RAM | Primary Use Case | AI Coach Quality | Classification Speed | Hardware Requirement |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`phi-3:mini`** | ~4GB | Speed-critical tasks | Basic to Good | Fastest | Low (runs well on most modern laptops) |
+| **`mistral:7b`** | ~8GB | General purpose | Good | Fast | Medium (requires decent RAM) |
+| **`llama3:8b`** | ~8GB | Quality-critical tasks | Excellent | Fast | Medium-High (requires decent RAM, GPU recommended) |
+| **`gemma:7b`** | ~8GB | General purpose | Good | Fast | Medium (requires decent RAM) |
+
+---
+
+### Head-to-Head: `llama3:8b` vs. `phi-3:mini`
+
+The choice for the best *default* model comes down to a direct trade-off between the two best-in-class options:
+
+-   If we prioritize the **quality of the AI Productivity Coach**, `llama3:8b` is the clear winner. Its ability to understand context, follow instructions, and generate creative text will provide a significantly better user experience for the end-of-day summary. The trade-off is a slightly higher resource footprint and potentially a few hundred milliseconds more latency on classification tasks.
+
+-   If we prioritize **raw speed and minimal resource usage**, `phi-3:mini` is the champion. It will be near-instantaneous for content classification, ensuring the most responsive experience possible. The trade-off is that the AI Coach summaries may be more simplistic and less insightful.
+
+---
+
+### Final Recommendation
+
+For the initial release, the recommended default model is **`llama3:8b`**.
+
+**Reasoning:** The small amount of extra latency for classification is a worthy trade-off for the dramatic increase in quality for the AI Productivity Coach, which is a major user-facing feature. The 8B parameter size is the modern "sweet spot" for powerful local AI on consumer hardware.
+
+However, **`phi-3:mini`** will be documented as the official "lightweight alternative" for users on lower-spec machines or for those who prefer maximum responsiveness above all else. The final choice will always remain in the user's hands via the configuration file.
