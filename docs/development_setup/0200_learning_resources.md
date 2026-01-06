@@ -20,34 +20,23 @@ Rust is the core language for Operion's backend.
 
 ---
 
-## 2. Tauri
+## 2. GNOME Desktop Integration
 
-Tauri is the framework used to build the desktop application and bridge between the Rust backend and the web frontend.
+To achieve deep OS integration on Zorin OS, Operion interacts directly with the GNOME desktop environment. This is done primarily through D-Bus and system command-line tools.
 
--   **Tauri Documentation (Official):**
-    -   **Link:** [https://tauri.app/v1/guides/introduction/](https://tauri.app/v1/guides/introduction/)
-    -   **Description:** The official guides provide excellent documentation on setting up a Tauri project, understanding its architecture, and using its features like commands, plugins, and IPC.
--   **Tauri API Reference:**
-    -   **Link:** [https://tauri.app/v1/api/js/](https://tauri.app/v1/api/js/) (JavaScript/TypeScript)
-    -   **Link:** [https://docs.rs/tauri/latest/tauri/](https://docs.rs/tauri/latest/tauri/) (Rust)
-    -   **Description:** Essential for looking up specific functions and how to use them in both the frontend and backend.
-
----
-
-## 3. Svelte
-
-Svelte is the JavaScript framework used to build Operion's user interface.
-
--   **Svelte Tutorial (Official):**
-    -   **Link:** [https://svelte.dev/tutorial](https://svelte.dev/tutorial)
-    -   **Description:** The interactive official tutorial is the best way to learn Svelte from scratch. It's very well-structured and covers all core concepts.
--   **Svelte Documentation (Official):**
-    -   **Link:** [https://svelte.dev/docs](https://svelte.dev/docs)
-    -   **Description:** Comprehensive reference for Svelte's API and features.
+-   **The `zbus` Crate for D-Bus:**
+    -   **Link:** [https://docs.rs/zbus/latest/zbus/](https://docs.rs/zbus/latest/zbus/)
+    -   **Description:** `zbus` is a modern, async-first Rust library for D-Bus, the standard IPC system used by GNOME and most Linux desktops. This is the key technology for sending native notifications, interacting with the system tray, and communicating between Operion's components. The `zbus` book is an excellent place to start.
+-   **GNOME `gsettings` Command:**
+    -   **Link:** [https://developer.gnome.org/documentation/tutorials/settings.html](https://developer.gnome.org/documentation/tutorials/settings.html)
+    -   **Description:** `gsettings` is a command-line tool for viewing and changing user settings in GNOME. Operion uses this to change the GTK theme, icon theme, wallpaper, and other desktop appearance settings. A good understanding of the GNOME settings schemas (e.g., `org.gnome.desktop.interface`) is essential.
+-   **GNOME Shell Extensions:**
+    -   **Link:** [https://gjs.guide/extensions/](https://gjs.guide/extensions/)
+    -   **Description:** While Operion's core is Rust, the panel applet itself will likely be a small GNOME Shell Extension written in JavaScript. This guide is the best resource for learning how to create and manage extensions that add new icons and menus to the GNOME panel.
 
 ---
 
-## 4. Ollama
+## 3. Ollama
 
 Ollama allows you to run large language models locally.
 

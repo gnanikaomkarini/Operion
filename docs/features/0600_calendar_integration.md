@@ -8,19 +8,20 @@ This feature removes the need for constant self-control by making your pre-commi
 
 ## How It Works
 
-The process is simple:
+The process is designed to integrate with your existing planning workflow, not replace it.
 
-1.  **Plan Your Day:** Operion includes a built-in calendar view. You can create blocks of time for your tasks, just like you would in a normal calendar application.
-2.  **Assign Modes to Time Blocks:** For each block of time, you can assign a mode (e.g., "Work," "Chill"). For example, you might schedule a 2-hour "Work Mode" block in the morning for a critical project.
-3.  **Automatic Mode Locking:** When a scheduled time block begins, Operion automatically switches to the assigned mode and **locks** it.
+1.  **Export Your Calendar:** You use your existing calendar application (e.g., Google Calendar, or a local app) and export your schedule to a standard file format (e.g., iCalendar `.ics`).
+2.  **Point Operion to the File:** In your Operion configuration, you provide the path to this calendar file.
+3.  **Assign Modes in Your Calendar:** You can assign a mode to an event by simply putting it in the event title or description (e.g., "Project Report [work]" or "Yoga [chill]"). Operion will parse this.
+4.  **Automatic Mode Locking:** When a scheduled time block begins, Operion reads the event from your calendar file, sees the assigned mode, and automatically switches to and **locks** that mode.
 
 ## Task-Driven Sessions
 
-To enhance focus and provide clarity, the calendar integration is enhanced with a simple task management system. This allows you to associate a specific intention with each scheduled block of time.
+To enhance focus, you can link tasks to your scheduled time blocks.
 
-1.  **Simple Task List:** A dedicated area in the Operion UI allows you to list your key tasks for the day (e.g., "Finish Q3 report," "Debug login page").
-2.  **Link Tasks to Calendar:** You can drag-and-drop tasks from your list directly onto time blocks in the calendar. A `Work Mode` block now becomes `Work Mode: Finish Q3 report`.
-3.  **Passive Reminder:** When the scheduled session begins, the Operion UI will display a constant, non-intrusive reminder of the current task. This helps you quickly regain focus after an interruption.
+1.  **Simple Task File:** You list your key tasks for the day in a simple text or Markdown file (e.g., `~/tasks.md`).
+2.  **Link Tasks to Calendar:** In your calendar event, you can reference a task using a simple tag (e.g., "Finish report #task1").
+3.  **Passive Reminder in Panel:** When the scheduled session begins, the text of the Operion panel applet itself can change to display the current task (e.g., "Work: Finish report"). This provides a constant, non-intrusive reminder of your objective without using a floating window or persistent notification.
 4.  **Richer Analytics:** This data is used by the `AI Productivity Coach` to provide more meaningful insights, comparing not just how long you worked, but what you accomplished versus what you planned.
 
 ## The "Lock"
@@ -36,7 +37,6 @@ The goal of the lock is not to trap you, but to enforce a moment of mindful refl
 
 ## Calendar Integration
 
--   **Built-in Calendar:** For the MVP, Operion will feature its own simple, local calendar for planning your days.
--   **External Calendar Sync (Future Goal):** A future version of Operion could sync with external calendar services like Google Calendar or Outlook Calendar. This would allow you to manage your schedule from your preferred application, and have Operion automatically enforce the modes you've planned.
+The core of this feature relies on syncing with external calendar services. By reading a standard `.ics` file, Operion can integrate with most calendar providers (Google, Outlook, etc.) without needing complex APIs. The user simply needs to make their calendar available as a local file that Operion can read. This keeps the setup simple and robust.
 
 By linking your schedule directly to your computer's behavior, Calendar-Driven Mode Locking makes it easier than ever to live with intention.

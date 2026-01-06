@@ -22,7 +22,7 @@ The AI Engine can be thought of as an internal microservice. The Controller comm
     1.  At the end of the day, the Controller gathers all the relevant data (time in modes, distractions, etc.).
     2.  It sends this data to the AI Engine's `/generate_summary` endpoint.
     3.  The AI Engine formats the data into a prompt, sends it to an LLM, and returns the generated text to the Controller.
-    4.  The Controller then pushes this text to the UI.
+    4.  The Controller then displays this text in a native desktop notification.
 
 ## Pluggable AI Models
 

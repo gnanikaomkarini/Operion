@@ -12,42 +12,49 @@ The Controller does not talk to any specific OS-level API. Instead, it talks to 
 
 This interface defines a set of methods that every platform-specific implementation must provide.
 
-### `SystemMonitor` Interface (Conceptual):
+### `SystemMonitor` Trait (Conceptual):
 
-```python
-class SystemMonitor:
-    """An interface for OS-specific monitoring and control."""
+```rust
+use std::path::PathBuf;
+use async_trait::async_trait;
 
-    def get_active_window_info(self) -> dict:
-        """Returns info about the foreground window, e.g., {'app_name': '...', 'window_title': '...'}."""
-        pass
+pub struct WindowInfo {
+    pub app_name: String,
+    pub window_title: String,
+}
 
-    def get_running_apps(self) -> list[str]:
-        """Returns a list of running application names."""
-        pass
+#[async_trait]
+pub trait SystemMonitor {
+    /// Returns info about the foreground window.
+    async fn get_active_window_info(&self) -> Result<WindowInfo, anyhow::Error>;
 
-    def block_app(self, app_name: str) -> bool:
-        """Blocks or hides an application. Returns True on success."""
-        pass
+    /// Returns a list of running application names.
+    async fn get_running_apps(&self) -> Result<Vec<String>, anyhow::Error>;
 
-    def set_system_theme(self, theme_name: str):
-        """Sets the system UI theme (e.g., 'light', 'dark')."""
-        pass
+    /// Blocks or hides an application.
+    async fn block_app(&self, app_name: &str) -> Result<(), anyhow::Error>;
 
-    def start_monitoring(self, event_queue: Queue):
-        """Begins monitoring the system for events and puts them into the provided queue."""
-        pass
+    /// Sets the system-wide GTK theme.
+    async fn set_gtk_theme(&self, theme_name: &str) -> Result<(), anyhow::Error>;
+
+    /// Sets the desktop wallpaper.
+    async fn set_wallpaper(&self, file_path: &PathBuf) -> Result<(), anyhow::Error>;
+
+    /// Begins monitoring the system for events and sends them to the Controller via a channel.
+    fn start_monitoring(&self, sender: tokio::sync::mpsc::Sender<SystemEvent>) -> Result<(), anyhow::Error>;
+}
 ```
 
 ## Pluggable Implementations
 
-For each supported operating system, we will create a concrete implementation of this interface.
+For the initial target platform, **Zorin OS (GNOME)**, we will create a concrete implementation of this trait.
 
--   `LinuxSystemMonitor`: Might use libraries like `python-xlib` or D-Bus to interact with the X11 or Wayland display servers.
--   `WindowsSystemMonitor`: Will use the `pywin32` library to interact with the Windows API (e.g., `GetForegroundWindow`, `EnumWindows`).
--   `MacosSystemMonitor`: Will use the `pyobjc` bridge to access macOS's AppKit and other native frameworks.
+-   `GnomeSystemMonitor`: This implementation will be highly specific to the GNOME desktop environment.
+    -   To get window information, it will subscribe to focus change events on the D-Bus bus.
+    -   To change themes and wallpapers, it will execute `gsettings` commands.
+    -   To get a list of running applications, it may inspect the `/proc` filesystem or use other D-Bus interfaces.
 
-When Operion starts, it detects the current operating system and loads the appropriate `SystemMonitor` implementation. This allows the core logic in the Controller to remain completely platform-agnostic.
+When Operion starts, it detects that it's on a GNOME-based system and loads the `GnomeSystemMonitor` implementation. This allows the core logic in the Controller to remain completely platform-agnostic.
 
 ## Extensibility
 

@@ -8,7 +8,7 @@ To deepen the environmental shift that a mode creates, Operion could control not
 
 ## How It Could Work
 
-When defining a mode (either a default one or a custom one), a user could add an optional `soundscape` property. The Operion UI would provide a clear toggle to enable or disable the soundscape for each mode, ensuring the user is always in control.
+When defining a mode, a user could add an optional `soundscape` property. This can be enabled or disabled for each mode in the main configuration file, ensuring the user is always in control.
 
 When enabled and a mode is entered, Operion would automatically play the specified audio and stop it upon exit.
 

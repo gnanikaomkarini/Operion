@@ -10,14 +10,15 @@ The architecture of Operion is designed around three core principles:
 
 ## The High-Level Architecture
 
-Operion consists of several key components that work together to create the full experience.
+Operion consists of several key components that work together to create an experience that is deeply integrated with the host operating system.
 
 ```text
-+---------------------------+
-|        Operion UI         |
-|  (Mode Switch, Dashboard) |
-+---------------------------+
-            | (IPC / API)
++--------------------------------+
+| Desktop Environment (GNOME)    |
+| (Panel Applet, Notifications)  |
++--------------------------------+
+     ^      | (D-Bus / Commands)
+     | (User Input)
 +---------------------------+
 |     Operion Controller    |
 | (Rules, Policies, Modes)  |
@@ -36,8 +37,8 @@ Operion consists of several key components that work together to create the full
 
 ### Component Responsibilities:
 
--   **Operion UI:** The graphical front-end for the user. It is responsible for displaying the current mode, allowing the user to switch modes, and presenting the insights and analytics. It is a "dumb" client that gets its state and data from the Controller.
--   **Operion Controller:** The "brain" of the system. It runs as a background process (or daemon). It reads the user's configuration, maintains the system's current state (i.e., the active mode), and issues commands to the other components.
+-   **Desktop Environment Integration:** This is not a component we build, but the user's existing desktop environment (initially Zorin OS/GNOME) that we interact with. Operion's "UI" consists of native elements like a panel applet for mode switching and system notifications for feedback. All interactions are handled through OS-native mechanisms.
+-   **Operion Controller:** The "brain" of the system. It runs as a background process (or daemon). It reads the user's configuration, maintains the system's current state (i.e., the active mode), and issues commands to the other components (e.g., telling a System Hook to block an app, or telling the Desktop Environment to change the theme).
 -   **System Hooks & Monitors:** A set of OS-specific modules that interact directly with the operating system. They are responsible for tasks like:
     -   Getting the list of running applications.
     -   Identifying the active window and its title.

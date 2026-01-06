@@ -10,7 +10,7 @@ Unlike traditional operating systems that treat all tasks and applications equal
 -   **Rest intentionally** during breaks.
 -   **Consume entertainment mindfully** and without guilt.
 
-Operion is not a standalone operating system but a lightweight layer that runs on top of your existing OS (Linux, Windows, or macOS). This makes it a practical and extensible solution for enhancing your productivity and well-being.
+Operion is not a standalone operating system but a lightweight layer that integrates directly into your existing desktop environment. It changes the behavior and appearance of your OS from the inside, rather than running as a separate application. The initial development focus is on **Linux**, specifically **Zorin OS** and other GNOME-based desktops.
 
 ## The Core Philosophy
 

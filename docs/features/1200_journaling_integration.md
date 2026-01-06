@@ -11,7 +11,7 @@ This is achieved through a simple, non-intrusive prompt at the end of a work ses
 Instead of interrupting you at the start of your day, the journaling prompt appears only when you have signaled that you are finished with a block of focused work.
 
 1.  **Trigger:** The prompt is triggered when you manually switch **out of Work Mode**.
-2.  **Simple Prompt:** A clean, minimal UI appears with a simple question and a text area. The question might be:
+2.  **Simple Prompt:** A simple, native dialog box appears with a question and a text area. The question might be:
     -   "You just finished a work session. What did you accomplish?"
     -   "What was the biggest distraction you faced during that session?"
     -   "On a scale of 1-5, how focused did you feel?"

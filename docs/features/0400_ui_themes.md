@@ -20,14 +20,32 @@ The design of the UI themes is based on the psychological impact of color and li
 -   **Chill Mode (Soft Themes):** Softer, warmer colors (e.g., pastels, earth tones) can create a more relaxed and calming atmosphere.
 -   **Entertainment Mode (Vibrant Themes):** Brighter, more saturated colors can enhance the experience of consuming media and playing games.
 
-## Implementation Details
+## Implementation on Zorin OS (GNOME)
 
-The implementation of UI theming will depend on the underlying operating system.
+On the target platform of Zorin OS and other GNOME-based desktops, Operion can achieve deep and comprehensive theme control by programmatically changing the desktop's settings. This is primarily done by issuing commands to the `gsettings` utility from the Rust backend.
 
--   **Changing Wallpapers:** This is a straightforward feature that can be implemented on all major operating systems.
--   **Altering System Colors:** This is more complex.
-    -   On some Linux desktop environments, this can be done programmatically.
-    -   On Windows and macOS, this might be limited to changing between the system's built-in "light" and "dark" modes.
--   **Custom Theming Engine:** A more advanced implementation could involve a custom theming engine that applies overlays or uses other techniques to control the look and feel of the OS, but this would be a long-term goal.
+This allows for instant, system-wide visual changes that are powerful and feel native to the OS.
 
-In the MVP, UI theming may be limited to switching wallpapers and toggling between light and dark mode.
+### Example `gsettings` Commands:
+
+-   **Changing the GTK (Application) Theme:** To switch to a dark, monochrome theme for Work Mode.
+    ```bash
+    gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+    ```
+
+-   **Changing the Icon Theme:** To switch to a simpler, less distracting icon set.
+    ```bash
+    gsettings set org.gnome.desktop.interface icon-theme 'elementary'
+    ```
+
+-   **Changing the Desktop Wallpaper:** To set a calming background for Chill Mode.
+    ```bash
+    gsettings set org.gnome.desktop.background picture-uri 'file:///path/to/your/chill-wallpaper.jpg'
+    ```
+
+-   **Changing the Shell Theme (Advanced):** Requires the "User Themes" GNOME extension to be installed, but allows changing the theme of the top panel and other shell elements.
+    ```bash
+    gsettings set org.gnome.shell.extensions.user-theme name 'MyCustomShellTheme'
+    ```
+
+By executing these simple commands, the **Operion Controller** can completely reshape the visual environment to match the user's current mode, making the psychological context-switch much more powerful.

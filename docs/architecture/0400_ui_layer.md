@@ -1,43 +1,40 @@
-# 0400: The UI Layer
+# 0400: Desktop Integration & UI
 
-## A Clean and Simple User Interface
+## "Headless" by Design
 
-The **UI Layer** is the primary way the user interacts with Operion. Its design philosophy is to be as clean, simple, and unobtrusive as possible. It is not a complex application itself, but rather a thin client or "viewer" for the state managed by the **Operion Controller**.
+The core philosophy of Operion has shifted to favor deep OS integration over a traditional application model. Operion is "headless"—it runs as a background service and does not have a primary application window. The user should feel that Operion is a *native feature* of their desktop, not a separate app they need to open and manage.
 
-The UI has three main responsibilities:
+The UI is not a single entity but a collection of interaction points that integrate directly into the user's desktop environment, initially targeting **Zorin OS (GNOME)**.
 
-1.  **Displaying State:** Showing the current mode, the time remaining in a locked session, and key insights.
-2.  **Capturing User Intent:** Providing controls (e.g., buttons or menu items) that allow the user to request a mode change.
-3.  **Presenting Data:** Displaying the analytics and suggestions from the AI Coach in a clean, readable format.
+## Primary Interaction Points
+
+The user interacts with Operion through the native elements of their desktop:
+
+1.  **System Panel Applet:** The main entry point is a simple icon in the Zorin/GNOME top panel. Clicking this icon reveals a menu to view the current mode and manually switch to another. This is the primary point of control.
+2.  **Native Notifications:** The system communicates with the user via the desktop's native notification system. This is used for AI Coach summaries, suggesting a mode switch, or warning about a blocked website.
+3.  **Configuration Files:** As before, the deep customization of modes and rules happens by editing human-readable `.yaml` or `.toml` files.
 
 ## Decoupling the UI from the Core Logic
 
-A critical architectural decision is to keep the UI layer "dumb." This means the UI does not contain any business logic. It doesn't know what "Work Mode" is, what the rules are, or how to block an app. It only knows how to display the information it is given and how to forward user actions to the Controller.
+The architectural principle of keeping the "UI" and the "core logic" separate remains, but the implementation is different. The **Operion Controller** (the Rust background service) remains the "brain." It contains all the state and business logic.
 
-This decoupling is achieved through a well-defined communication channel between the UI process and the background Controller process.
+The UI components (panel applet, notifications) are "dumb" clients that react to commands or state changes from the Controller.
 
 ### Communication Channel
 
-The recommended approach is to use a simple Inter-Process Communication (IPC) mechanism, such as a local WebSocket server or a REST-like API exposed by the Controller on a local port.
+Instead of IPC with a web view, the Controller communicates directly with the Desktop Environment's services:
 
--   **Controller -> UI (Push):** The Controller sends messages to the UI whenever the state changes.
-    -   `{'type': 'STATE_UPDATE', 'payload': {'current_mode': 'work', 'locked_until': '2026-01-04T14:00:00Z'}}`
-    -   `{'type': 'NEW_INSIGHT', 'payload': {'focus_score': 78}}`
--   **UI -> Controller (Request):** The UI sends messages to the Controller when the user performs an action.
-    -   `{'type': 'SWITCH_MODE_REQUEST', 'payload': {'mode': 'chill'}}`
-
-This unidirectional data flow (state flows down, actions flow up) is a core principle of many modern UI frameworks (like React, Vue, etc.) and helps to keep the application state predictable and easy to debug.
+-   **Controller -> Desktop (Commands):** The Controller issues commands to change the desktop environment.
+    -   To change the GTK theme, it will execute a `gsettings` command.
+    -   To post a notification, it will use a D-Bus library to send a message to the GNOME notification service.
+-   **Desktop -> Controller (Events):** The panel applet, when clicked, sends a signal to the Controller (e.g., via D-Bus or a local socket) to request a mode switch.
 
 ## Technology Choices
 
-The UI can be built with a variety of technologies. The proposed stack is **Electron/Tauri + React**.
+The technology stack for the UI is now based on direct interaction with the host OS.
 
--   **Electron / Tauri:** These frameworks allow us to build a cross-platform desktop application using web technologies (HTML, CSS, JavaScript).
-    -   **Tauri** is generally preferred as it results in a much smaller and more lightweight application binary compared to Electron.
--   **React:** A powerful and popular library for building user interfaces. Its component-based model and state management features are a perfect fit for this architecture.
+-   **Rust:** The core Controller remains in Rust.
+-   **D-Bus:** For robust, native communication with the GNOME desktop environment and its various services (notifications, system tray), a Rust D-Bus library like `zbus` is the ideal choice.
+-   **Shell Commands:** For simple, fire-and-forget actions like changing a theme or wallpaper, the Controller can directly execute shell commands (e.g., `gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'`).
 
-By keeping the UI and the Controller as separate processes that communicate over a simple API, we gain several advantages:
-
--   **Robustness:** If the UI crashes, the Controller (and all its rules) continues to run in the background. The UI can simply be restarted.
--   **Flexibility:** We can completely replace the UI or build alternative UIs (e.g., a simple command-line interface or a mobile app) without touching the core logic of the Controller.
--   **Developer Experience:** A front-end developer can work on the UI without needing to set up a complex Python/Node.js environment, and vice versa.
+By using the desktop's own tools, we ensure that Operion feels completely native and respects the user's environment. This approach is more robust and resource-efficient than running a separate, web-based UI. A web-based dashboard could be added later as an optional, secondary interface for detailed analytics, but it is not the primary method of interaction.

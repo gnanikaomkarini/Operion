@@ -56,13 +56,16 @@ ai:
 
 The modular, interface-driven design makes it possible for developers to extend Operion's functionality.
 
-### 1. Adding Support for a New OS
+### 1. Adding Support for a New Desktop Environment
 
-If a developer wants to make Operion work on a new Linux desktop environment (e.g., Sway), they don't need to understand the core application logic. They only need to:
+The primary way for developers to contribute is by adding support for new desktop environments. Operion's architecture is designed to make this straightforward. The initial implementation focuses on GNOME, but to add support for **KDE Plasma**, a developer would:
 
-1.  Create a new class, `SwaySystemMonitor`.
-2.  Implement the methods defined in the `SystemMonitor` interface (e.g., `get_active_window_info`, `block_app`) using Sway's specific tools (like `swaymsg`).
-3.  Add the logic to the main application loader to detect and load `SwaySystemMonitor` when running on Sway.
+1.  Create a new Rust module, `kde_system_monitor.rs`.
+2.  Inside this module, create a struct `KdeSystemMonitor` that implements the `SystemMonitor` trait.
+3.  Implement the trait's methods using KDE-specific tools (e.g., the `kwriteconfig` command for changing theme settings, and D-Bus interactions for Plasma's notification and panel services).
+4.  Update the main application loader to detect when it's running on KDE and instantiate `KdeSystemMonitor` instead of the default `GnomeSystemMonitor`.
+
+This allows the core application logic to remain untouched while extending Operion's reach to more users.
 
 ### 2. Adding a New AI Provider
 

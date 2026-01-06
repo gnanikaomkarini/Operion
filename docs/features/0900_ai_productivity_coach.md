@@ -35,7 +35,7 @@ The AI Productivity Coach is powered by a Large Language Model (LLM) like Gemini
 
 1.  **Data Synthesis:** At the end of the day, Operion compiles a summary of your activity data (focus score, time in modes, top distractions, calendar commitments, etc.).
 2.  **Prompting the LLM:** This data is formatted into a detailed prompt that is sent to the LLM. The prompt instructs the model to act as a friendly and encouraging productivity coach and to generate a summary and suggestions based on the provided data.
-3.  **Displaying the Result:** The LLM's response is then displayed in the Operion UI.
+3.  **Displaying the Result:** The LLM's response is then displayed in a native desktop notification.
 
 ## Privacy and Control
 

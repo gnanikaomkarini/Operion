@@ -4,7 +4,7 @@
 
 Operion doesn't just track your activity; it turns that data into **actionable insights** that help you understand your habits and improve your focus. The goal is to provide you with a clear picture of how you spend your time, without overwhelming you with raw statistics.
 
-The insights are presented in a clean, easy-to-understand dashboard within the Operion UI.
+The insights are delivered through the native desktop environment. Daily summaries appear as non-intrusive notifications, and more detailed weekly reports can be accessed on demand from the Operion panel applet. This ensures you get valuable information without being pulled into a separate application.
 
 ## Daily Insights
 

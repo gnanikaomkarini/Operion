@@ -75,4 +75,4 @@ For each custom mode, you can define its name, icon, app/website policies, and U
 
 ## Manual Mode Switching
 
-In the initial version of Operion, you switch between modes manually via the Operion UI (e.g., a simple menu bar app). This is a deliberate design choice. The act of manually switching modes forces you to be intentional about how you are about to spend your time.
+In the initial version of Operion, you switch between modes manually via a native panel applet that integrates directly into the Zorin OS/GNOME desktop. This applet will display the current mode's icon and provide a simple menu for switching. This is a deliberate design choice. The act of manually switching modes forces you to be intentional about how you are about to spend your time.

@@ -8,7 +8,7 @@ Its primary responsibilities are:
 
 1.  **Configuration Management:** Loading, parsing, and managing the user's configuration files.
 2.  **State Management:** Maintaining the current state of the system, most importantly the active mode.
-3.  **Event Handling:** Listening for events from the System Hooks & Monitors (e.g., "user opened a new application") and the UI (e.g., "user requested to switch to Work Mode").
+3.  **Event Handling:** Listening for events from the System Hooks & Monitors (e.g., "user opened a new application") and native UI components (e.g., "user clicked the panel applet to switch to Work Mode").
 4.  **Rule Enforcement:** Applying the rules defined in the user's configuration to the current state and issuing commands accordingly.
 
 ## Configuration at the Core
@@ -67,7 +67,7 @@ The Controller operates on a continuous loop:
 2.  **Receive Events:** Ingest a queue of events from the UI and Monitors (e.g., `app_opened`, `window_title_changed`, `user_clicked_switch_mode`).
 3.  **Update State:** Update the internal state based on the events (e.g., the `active_mode` is now `work`).
 4.  **Evaluate Rules:** Go through the rules for the active mode and compare them against the current system state (e.g., is the newly opened app in the whitelist?).
-5.  **Dispatch Commands:** If a rule is violated, dispatch a command to the appropriate System Hook (e.g., `block_app("YouTube")`). If the UI needs to be updated, send a state-change event to the UI layer.
+5.  **Dispatch Commands:** If a rule is violated, dispatch a command to the appropriate System Hook (e.g., `block_app("YouTube")`). If the UI needs to be updated (e.g., a theme change), issue a command to the Desktop Environment (e.g., via D-Bus or `gsettings`).
 6.  **Repeat.**
 
 This clean separation of concerns makes the Controller a powerful yet maintainable foundation for the entire system.
