@@ -50,3 +50,9 @@ Operion consists of several key components that work together to create an exper
     -   The SQLite database for storing time-series activity data.
 
 The following documents in this section will explore each of these components in greater detail.
+
+---
+
+### Practical Example
+
+To see how these components work together in a real-world scenario, refer to the **[0800: Interaction Workflow](./0800_interaction_workflow.md)** document for a detailed breakdown of a manual mode switch.
