@@ -18,3 +18,15 @@ env/
 *.egg-info
 build/
 dist/
+
+# Rust/Tauri
+/target
+src-tauri/target/
+
+# Svelte
+.svelte-kit/
+
+# OS/IDE
+.DS_Store
+.vscode/
+.idea/
