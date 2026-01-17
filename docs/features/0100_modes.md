@@ -1,78 +1,45 @@
-# 200: System-Wide Modes
+# 200: System Modes (Specification)
 
-## The Concept of Modes
+## Definition
 
-The core of the Operion experience is **modes**. A mode is a system-wide state that defines the "rules of engagement" for how you interact with your computer at any given moment. Instead of having a single, static environment, Operion allows you to switch between different modes, each tailored to a specific intention.
+A "Mode" is a named configuration state that dictates system behavior. Modes are defined in the user's configuration file (`modes.toml`).
 
-Modes are manually controlled, allowing you to make a conscious decision about what you want to do. When you switch to a mode, Operion instantly changes several aspects of your digital environment.
+## Configuration Schema
 
-Modes can affect:
--   **Application Visibility & Permissions:** Which apps are you allowed to open?
--   **UI Themes and Layouts:** The look and feel of your desktop.
--   **Notification Behavior:** Whether notifications are silenced or allowed.
--   **System Policies:** Other rules that govern your computer's behavior.
+Modes are defined in TOML. The daemon watches this file for changes and hot-reloads the configuration.
 
-## The Default Modes
+```toml
+# ~/.config/operion/modes.toml
 
-Operion comes with three pre-configured modes, each designed for a specific purpose.
+[modes.work]
+name = "Deep Work"
+theme = "Adwaita-dark"
+wallpaper = "file:///home/user/wallpapers/focus.jpg"
+policy = "whitelist"
+apps = ["code", "firefox", "gnome-terminal"]
+blocks_notifications = true
 
-### 🧑‍💻 Work Mode
+[modes.chill]
+name = "Relaxation"
+theme = "Adwaita" # Light theme
+policy = "blacklist"
+apps = ["slack", "discord"] # Block work comms
+```
 
-Work Mode is designed for deep, focused work. When you enter Work Mode, Operion creates a distraction-free environment.
+## Mode Attributes
 
--   **App Restrictions:** Only applications on your pre-defined "work list" are accessible. All other applications are hidden or blocked.
--   **Minimalist UI:** The user interface shifts to a monochrome, minimal theme to reduce visual clutter and stimulation.
--   **Notifications Suppressed:** All system and application notifications are automatically silenced.
--   **Time-Locked Sessions:** You can lock yourself into Work Mode for a specific duration, making it harder to switch out impulsively.
+| Attribute | Type | Description |
+| :--- | :--- | :--- |
+| `name` | `string` | Display name for the UI. |
+| `theme` | `string` | GTK theme name (must be installed on host). |
+| `wallpaper` | `string` | Absolute URI to the wallpaper image. |
+| `policy` | `enum` | `whitelist` (allow only listed) or `blacklist` (block listed). |
+| `apps` | `Vec<string>` | List of binary names or app IDs. |
+| `blocks_notifications` | `bool` | If true, enables Do Not Disturb (DND). |
 
-### 😌 Chill Mode
+## Default Modes
 
-Chill Mode is for light productivity, recovery, and relaxed activities. It's the perfect mode for winding down after a long work session or for a lazy weekend morning.
-
--   **Softer UI:** The UI theme changes to something more visually pleasant and less stark than Work Mode.
--   **Relaxed Restrictions:** You have access to a wider range of applications, such as music players, reading apps, and personal project tools.
--   **Reduced Notifications:** Only important notifications might be allowed through.
-
-### 🎬 Entertainment Mode
-
-Entertainment Mode is for intentional, guilt-free leisure. It acknowledges that relaxation and entertainment and important parts of a balanced life.
-
--   **Media-Centric UI:** The UI can be configured to prioritize media applications.
--   **No Productivity Penalties:** Time spent in this mode does not negatively affect your productivity scores.
--   **Full Access:** All applications and websites are typically available.
-
-### ⚡ Focus Sprint Mode
-
-Focus Sprint Mode is designed for periods of hyper-focused, uninterrupted work, leveraging techniques like the Pomodoro method. It acts as a temporary, highly restrictive state, often initiated from within Work Mode, to help you tackle specific tasks with maximum concentration.
-
--   **Intense Restrictions:** Even more stringent than standard Work Mode. This might include:
-    -   Allowing only a single, pre-selected application to run.
-    -   Absolute suppression of all notifications, alerts, and interruptions.
-    -   Optional integration with ambient focus soundscapes.
--   **Time-Boxed Sessions:** Activated for a specific duration (e.g., 25 minutes), after which Operion can automatically guide you into a short break (e.g., switching to Chill Mode for 5 minutes) before returning to your regular Work Mode.
--   **Automated Workflow:** Removes the mental overhead of managing timers and breaks, allowing you to fully immerse in your task.
-
-### 🚫 Suspended Mode
-
-There are times, such as during an online assessment, a critical video call, or system diagnostics, when you need to guarantee that Operion will not interfere in any way. Suspended Mode is a fail-safe that completely and temporarily pauses all of Operion's functions.
-
--   **No Interference:** When in Suspended Mode, all features are dormant. There is no application or website blocking.
--   **No Tracking:** All activity monitoring and journaling prompts are paused to ensure privacy and zero overhead.
--   **System Default:** All UI themes are reverted to your system's default.
--   **Full User Control:** This mode gives you an explicit "off switch" for Operion's functionality, ensuring you are always in complete control.
-
-## Creating Your Own Modes
-
-Beyond the default modes, Operion is designed to be a personal framework for focus. Users have the power to create, edit, and delete their own modes through a simple configuration file (e.g., `modes.yaml`).
-
-This allows you to tailor Operion to your specific workflows and projects. For example, you could create:
-
--   A **"Study Mode"** that allows only research websites, a PDF reader, and a word processor.
--   A **"Design Mode"** that permits Figma and Photoshop but blocks chat applications.
--   A **"Commute Mode"** that disables all internet-required apps for offline work.
-
-For each custom mode, you can define its name, icon, app/website policies, and UI theme, making the system truly your own.
-
-## Manual Mode Switching
-
-In the initial version of Operion, you switch between modes manually via a native panel applet that integrates directly into the Zorin OS/GNOME desktop. This applet will display the current mode's icon and provide a simple menu for switching. This is a deliberate design choice. The act of manually switching modes forces you to be intentional about how you are about to spend your time.
+The system ships with three default definitions if the config file is missing:
+1.  **Work:** Whitelist-based, dark theme, DND enabled.
+2.  **Chill:** Blacklist-based (blocks productivity apps), light theme.
+3.  **Entertainment:** Unrestricted.
