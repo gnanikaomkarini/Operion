@@ -42,5 +42,10 @@ CREATE INDEX IF NOT EXISTS idx_mode_log_timestamp ON mode_log(timestamp);
 
 ## Data Lifecycle
 
-- **Write Frequency:** Buffered writes occur every 30 seconds or on mode switch to minimize disk I/O.
-- **Retention:** By default, data is retained for 90 days. A generic `VACUUM` and prune operation runs weekly.
+
+
+-   **Write Frequency:** Buffered writes occur every 30 seconds or on mode switch to minimize disk I/O.
+
+-   **Concurrency:** **WAL (Write-Ahead Logging) Mode** is mandatory (`PRAGMA journal_mode=WAL;`) to allow simultaneous readers and writers. This ensures the Journal UI can write to the DB while the Daemon is reading/writing.
+
+-   **Retention:** By default, data is retained for 90 days. A generic `VACUUM` and prune operation runs weekly.
