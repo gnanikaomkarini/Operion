@@ -1,73 +1,35 @@
-# 0200: The Operion Controller
+# 0200: Operion Controller (Daemon)
 
-## The Central Nervous System
+## Architecture
 
-The **Operion Controller** is the core component of the entire system. It runs as a persistent background process and acts as the central coordinator for all of Operion's functionality.
+The Controller (`operiond`) is the primary executable. It implements an event-driven architecture using the `tokio` runtime.
 
-Its primary responsibilities are:
+## Event Loop
 
-1.  **Configuration Management:** Loading, parsing, and managing the user's configuration files.
-2.  **State Management:** Maintaining the current state of the system, most importantly the active mode.
-3.  **Event Handling:** Listening for events from the System Hooks & Monitors (e.g., "user opened a new application") and native UI components (e.g., "user clicked the panel applet to switch to Work Mode").
-4.  **Rule Enforcement:** Applying the rules defined in the user's configuration to the current state and issuing commands accordingly.
+The main loop processes events from multiple asynchronous channels:
 
-## Configuration at the Core
+1.  **System Events:** Window focus changes, idle timers.
+2.  **User Commands:** D-Bus method calls (e.g., `SetMode`).
+3.  **File Watchers:** `notify` events on configuration/calendar files.
+4.  **Tickers:** Periodic tasks (e.g., every 60s check for calendar events).
 
-Modularity and user-friendliness start with configuration. The Controller is designed to read its entire configuration from a set of simple, human-readable files (e.g., YAML or TOML format) stored in a well-known user directory (e.g., `~/.config/operion/`).
+## State Machine
 
-### Example Configuration:
+The system state is protected by a `RwLock`.
 
-A user could define their modes and rules in a file like `modes.yaml`:
-
-```yaml
-modes:
-  work:
-    name: "Work Mode"
-    theme: "monochrome"
-    apps:
-      # Whitelist: only these apps are allowed
-      policy: "whitelist"
-      list:
-        - "Code"
-        - "Terminal"
-        - "Figma"
-        - "Spotify" # User-added exception
-    websites:
-      # Blacklist: these websites are blocked
-      policy: "blacklist"
-      list:
-        - "youtube.com"
-        - "twitter.com"
-        - "reddit.com"
-
-  chill:
-    name: "Chill Mode"
-    theme: "solarized-dark"
-    apps:
-      # Blacklist: block only the most demanding apps
-      policy: "blacklist"
-      list:
-        - "Docker"
-    websites:
-      policy: "none"
-      list: []
+```rust
+struct SystemState {
+    active_mode: ModeId,
+    locked_until: Option<DateTime<Utc>>,
+    active_window: Option<WindowInfo>,
+    is_idle: bool,
+}
 ```
 
-### Handling User Modifications
+## Mode Transition Logic
 
-This configuration-based approach directly addresses the user's need for customization. To allow Spotify in Work Mode, the user would simply edit the `modes.yaml` file and add `"Spotify"` to the `list` under `work.apps`.
-
-The Controller is designed to watch for changes to these configuration files. When a file is saved, the Controller will automatically reload the configuration and apply the new rules without requiring a system restart.
-
-## The Main Control Loop
-
-The Controller operates on a continuous loop:
-
-1.  **Load/Reload Config:** Check if the configuration files have changed. If so, load them.
-2.  **Receive Events:** Ingest a queue of events from the UI and Monitors (e.g., `app_opened`, `window_title_changed`, `user_clicked_switch_mode`).
-3.  **Update State:** Update the internal state based on the events (e.g., the `active_mode` is now `work`).
-4.  **Evaluate Rules:** Go through the rules for the active mode and compare them against the current system state (e.g., is the newly opened app in the whitelist?).
-5.  **Dispatch Commands:** If a rule is violated, dispatch a command to the appropriate System Hook (e.g., `block_app("YouTube")`). If the UI needs to be updated (e.g., a theme change), issue a command to the Desktop Environment (e.g., via D-Bus or `gsettings`).
-6.  **Repeat.**
-
-This clean separation of concerns makes the Controller a powerful yet maintainable foundation for the entire system.
+When a transition is requested:
+1.  **Validation:** Check if current mode is locked (time-based).
+2.  **Teardown:** Revert changes from previous mode (e.g., kill launched processes).
+3.  **Setup:** Apply new mode settings (theme, wallpaper, app blocking).
+4.  **Persistence:** Log the transition to `mode_log` table.
