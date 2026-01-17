@@ -1,53 +1,46 @@
-# 0600: Storage and Data Management
+# 0600: Storage and Data (Implementation Spec)
 
-## A Clear Separation of Data and Configuration
+## File Layout
 
-Operion's storage layer is designed to be simple, robust, and privacy-focused. It is built on a fundamental principle: a clear separation between **user configuration** and **activity data**.
+Operion adheres to the **XDG Base Directory Specification** on Linux.
 
--   **User Configuration:** These are the human-readable files that define how Operion should behave (e.g., `modes.yaml`). The user is expected to directly view and edit these files. They define the *rules*.
--   **Activity Data:** This is the time-series data collected by the Activity Monitor (e.g., what app was used and when). This data is stored in a structured, machine-readable format and is not meant to be edited by the user directly. It represents the *history* of what happened.
+| File Type | Default Path | Environment Variable |
+| :--- | :--- | :--- |
+| **Configuration** | `~/.config/operion/config.toml` | `$XDG_CONFIG_HOME` |
+| **Activity Database** | `~/.local/share/operion/activity.db` | `$XDG_DATA_HOME` |
+| **Logs** | `~/.local/state/operion/operion.log` | `$XDG_STATE_HOME` |
 
-This separation ensures that the user's settings are easy to manage and back up, while the application's historical data can be stored efficiently.
+## Database Schema (SQLite)
 
-## User Configuration
+Activity data is stored in a local SQLite database using the `rusqlite` crate. Timestamps are stored as UTC Unix integers (seconds).
 
--   **Format:** Human-readable text files, such as YAML or TOML. This makes them easy to edit with any text editor.
--   **Location:** A standard user configuration directory, e.g., `~/.config/operion/`.
--   **Content:** This includes the definition of modes, application and website blacklists/whitelists, and settings for the AI engine.
+### DDL
 
-**Example `config.yaml`:**
-```yaml
-ai:
-  provider: "gemini" # 'gemini', 'openai', or 'local'
-  api_key: "..." # Loaded from environment variable
+```sql
+-- Tracks detailed focus changes (active window)
+CREATE TABLE IF NOT EXISTS activity_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp INTEGER NOT NULL,          -- Unix epoch (seconds)
+    app_id TEXT NOT NULL,                -- e.g., "org.gnome.TextEditor"
+    window_title TEXT,                   -- Scrubbed title
+    duration INTEGER NOT NULL,           -- Seconds active
+    mode_id TEXT NOT NULL                -- The mode active at this time
+);
 
-ui:
-  theme: "system"
+-- Tracks system mode switches
+CREATE TABLE IF NOT EXISTS mode_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp INTEGER NOT NULL,
+    mode_id TEXT NOT NULL,
+    trigger TEXT NOT NULL                -- "manual", "calendar", "auto"
+);
+
+-- Indices for performance
+CREATE INDEX IF NOT EXISTS idx_activity_timestamp ON activity_log(timestamp);
+CREATE INDEX IF NOT EXISTS idx_mode_log_timestamp ON mode_log(timestamp);
 ```
 
-## Activity Data
+## Data Lifecycle
 
-The activity data is stored in a local **SQLite database**. SQLite is a perfect choice for this use case because it is serverless, self-contained, and creates a single database file that is easy to manage and back up.
-
--   **Location:** A standard user data directory, e.g., `~/.local/share/operion/activity.db`.
--   **Privacy:** The database file is stored locally and never leaves the user's machine.
-
-### Database Schema (Conceptual)
-
-The database schema is designed to be simple and efficient for time-series analysis.
-
-**`activity_log` Table:**
--   `id` (INTEGER, PRIMARY KEY): A unique ID for each entry.
--   `timestamp` (INTEGER): A Unix timestamp of when the event occurred.
--   `app_name` (TEXT): The name of the application in the foreground (e.g., "Code").
--   `window_title` (TEXT): The title of the active window.
--   `mode` (TEXT): The active Operion mode at the time of the event (e.g., "work").
--   `duration` (INTEGER): The number of seconds the app was in the foreground before the state changed.
-
-**`mode_log` Table:**
--   `id` (INTEGER, PRIMARY KEY): A unique ID for each entry.
--   `timestamp` (INTEGER): A Unix timestamp of when the mode switch occurred.
--   `new_mode` (TEXT): The mode that was switched to (e.g., "chill").
--   `previous_mode` (TEXT): The mode that was switched from.
-
-This simple schema allows Operion to efficiently query the database to generate all the insights and analytics, such as calculating the time spent in each mode or identifying the most used applications.
+- **Write Frequency:** Buffered writes occur every 30 seconds or on mode switch to minimize disk I/O.
+- **Retention:** By default, data is retained for 90 days. A generic `VACUUM` and prune operation runs weekly.
