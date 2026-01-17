@@ -1,66 +1,57 @@
-# 0300: System Hooks & Monitors
+# 0300: System Hooks & Monitors (Implementation Spec)
 
-## The Bridge to the Operating System
+## Overview
 
-The **System Hooks & Monitors** are the components that interact directly with the underlying operating system. They are the "hands and eyes" of Operion, responsible for gathering information about the system and executing the commands issued by the **Operion Controller**.
+The System Hooks & Monitors layer abstracts OS-specific interactions. For the initial MVP targeting **Zorin OS (GNOME/Wayland)**, this layer interacts with the desktop environment via D-Bus and direct system calls.
 
-This layer is inherently OS-specific. The way you get the active window title on Linux is different from how you do it on Windows or macOS. Therefore, this entire component is designed as a **pluggable interface**.
+## Interface Definition
 
-## The Interface-Driven Design
-
-The Controller does not talk to any specific OS-level API. Instead, it talks to a generic `SystemMonitor` interface.
-
-This interface defines a set of methods that every platform-specific implementation must provide.
-
-### `SystemMonitor` Trait (Conceptual):
+The `SystemMonitor` trait defines the contract for all platform implementations.
 
 ```rust
-use std::path::PathBuf;
-use async_trait::async_trait;
-
-pub struct WindowInfo {
-    pub app_name: String,
-    pub window_title: String,
-}
-
 #[async_trait]
 pub trait SystemMonitor {
-    /// Returns info about the foreground window.
-    async fn get_active_window_info(&self) -> Result<WindowInfo, anyhow::Error>;
+    /// Returns metadata about the currently focused window.
+    async fn get_active_window(&self) -> Result<WindowInfo>;
 
-    /// Returns a list of running application names.
-    async fn get_running_apps(&self) -> Result<Vec<String>, anyhow::Error>;
+    /// Terminates the specified process.
+    async fn kill_process(&self, pid: u32) -> Result<()>;
 
-    /// Blocks or hides an application.
-    async fn block_app(&self, app_name: &str) -> Result<(), anyhow::Error>;
-
-    /// Sets the system-wide GTK theme.
-    async fn set_gtk_theme(&self, theme_name: &str) -> Result<(), anyhow::Error>;
+    /// Sets the global GTK theme using GSettings.
+    async fn set_theme(&self, theme: &str) -> Result<()>;
 
     /// Sets the desktop wallpaper.
-    async fn set_wallpaper(&self, file_path: &PathBuf) -> Result<(), anyhow::Error>;
-
-    /// Begins monitoring the system for events and sends them to the Controller via a channel.
-    fn start_monitoring(&self, sender: tokio::sync::mpsc::Sender<SystemEvent>) -> Result<(), anyhow::Error>;
+    async fn set_wallpaper(&self, uri: &str) -> Result<()>;
 }
 ```
 
-## Pluggable Implementations
+## GNOME Implementation (`GnomeSystemMonitor`)
 
-For the initial target platform, **Zorin OS (GNOME)**, we will create a concrete implementation of this trait.
+### 1. Active Window Monitoring (Wayland)
+On Wayland, external applications cannot directly query the active window title for security reasons. Operion relies on a companion **GNOME Shell Extension** to expose this data via D-Bus.
 
--   `GnomeSystemMonitor`: This implementation will be highly specific to the GNOME desktop environment.
-    -   To get window information, it will subscribe to focus change events on the D-Bus bus.
-    -   To change themes and wallpapers, it will execute `gsettings` commands.
-    -   To get a list of running applications, it may inspect the `/proc` filesystem or use other D-Bus interfaces.
+- **Bus:** Session Bus
+- **Interface:** `org.gnome.Shell.Extensions.Operion`
+- **Object Path:** `/org/gnome/Shell/Extensions/Operion`
+- **Method:** `GetActiveWindowInfo() -> (s, s)` (Returns `app_id`, `title`)
 
-When Operion starts, it detects that it's on a GNOME-based system and loads the `GnomeSystemMonitor` implementation. This allows the core logic in the Controller to remain completely platform-agnostic.
+### 2. Application Control
+- **Discovery:** Iterates `/proc` to map application names to PIDs.
+- **Enforcement:** Sends `SIGTERM` to processes violating the current mode's blacklist.
 
-## Extensibility
+### 3. UI & Theme Control
+Uses standard GLib/GSettings schemas.
 
-This pluggable architecture makes it easy to extend Operion's capabilities.
+- **Theme:**
+  - **Schema:** `org.gnome.desktop.interface`
+  - **Key:** `gtk-theme`
+  - **Type:** `string`
+  
+- **Wallpaper:**
+  - **Schema:** `org.gnome.desktop.background`
+  - **Key:** `picture-uri` (and `picture-uri-dark`)
+  - **Type:** `string` (URI format, e.g., `file:///...`)
 
--   **Supporting New OSes:** To support a new OS (e.g., a new Linux desktop environment), a developer only needs to create a new class that implements the `SystemMonitor` interface. They don't need to understand the core logic of the Controller.
--   **Adding New Hooks:** If we want to add a new feature, like monitoring microphone usage, we can simply add a `get_microphone_usage()` method to the interface and implement it for each platform.
-
-This design isolates the most complex and fragile part of the system (the OS interaction) into well-contained, swappable modules.
+## Error Handling
+- **D-Bus Timeouts:** The monitor implements a 200ms timeout for window queries to prevent blocking the main loop.
+- **Missing Extension:** If the GNOME Shell extension is unreachable, the system falls back to a "Degraded Mode" (logging warnings but continuing execution).
