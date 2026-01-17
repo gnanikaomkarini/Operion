@@ -2,10 +2,13 @@
 
 ## iCal Parsing
 
-Operion parses standard `.ics` files to schedule mode locks.
+Operion parses standard `.ics` files to schedule mode locks. It supports both local files and remote URLs (Google Calendar, Outlook, etc.).
 
 -   **Library:** `ical` crate.
--   **Sync:** File watcher triggers re-parse on modification.
+-   **Sources:**
+    -   **Local File:** Watched for changes via filesystem events.
+    -   **Remote URL:** Fetched via HTTP/HTTPS on a configurable polling interval (default: 15 minutes).
+-   **Sync:** Updates internal schedule cache upon file change or successful poll.
 
 ## Mode Mapping
 
