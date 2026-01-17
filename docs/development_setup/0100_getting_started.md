@@ -12,7 +12,7 @@ sudo apt install -y \
     libssl-dev \
     pkg-config \
     libglib2.0-dev \
-    libgtk-4-dev \
+    libgtk-4-dev \  # Required for the Journaling UI binary
     libdbus-1-dev \
     sqlite3 \
     libsqlite3-dev
@@ -38,16 +38,23 @@ ollama pull llama3
 
 ## Build Instructions
 
+Operion consists of multiple binaries.
+
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/yourusername/operion.git
     cd operion
     ```
 
-2.  **Build the project:**
+2.  **Build the project (Workspace):**
+    This will build the daemon, native host, and UI components.
     ```bash
     cargo build --release
     ```
+    *Output binaries in `target/release/`:*
+    *   `operiond` (The core daemon)
+    *   `operion-native` (Browser native messaging host)
+    *   `operion-journal` (GTK4 Journaling UI)
 
 3.  **Run tests:**
     ```bash
@@ -56,7 +63,9 @@ ollama pull llama3
 
 ## Project Structure
 
--   `src/main.rs`: Entry point for the daemon.
+-   `src/bin/operiond.rs`: Entry point for the daemon.
+-   `src/bin/operion-native.rs`: Entry point for browser host.
+-   `src/bin/operion-journal.rs`: Entry point for the UI.
 -   `src/controller/`: Core logic and state management.
 -   `src/monitors/`: OS-specific hooks (GNOME implementation).
 -   `src/storage/`: SQLite interactions.
