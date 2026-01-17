@@ -30,27 +30,25 @@ A key aspect of this design is that the AI Engine itself is a thin wrapper aroun
 
 The engine will have an interface for an `AIProvider`, and we can create concrete implementations for different services.
 
-### `AIProvider` Interface (Conceptual):
+### `AIProvider` Interface:
 
-```python
-class AIProvider:
-    """An interface for a generic AI model provider."""
+```rust
+#[async_trait]
+pub trait AIProvider {
+    /// Classifies a piece of text into predefined categories.
+    async fn classify_content(&self, text: &str) -> Result<Classification>;
 
-    def classify_content(self, text: str) -> dict:
-        """Classifies a piece of text into predefined categories."""
-        pass
-
-    def generate_text(self, prompt: str) -> str:
-        """Generates text based on a given prompt."""
-        pass
+    /// Generates text based on a given prompt.
+    async fn generate_text(&self, prompt: &str) -> Result<String>;
+}
 ```
 
 ### Pluggable Implementations:
 
--   `GeminiProvider`: An implementation that uses the Google Gemini API. This would provide high-quality results but requires an internet connection and sends data to the cloud.
--   `OpenAIProvider`: An implementation that uses the OpenAI (GPT) API.
--   `LocalLLMProvider`: An implementation that runs a local large language model (e.g., via Ollama or llama.cpp). This would be the most private option but would require a more powerful machine and might have lower accuracy.
--   `SimpleClassifierProvider`: A non-LLM, local provider that uses simpler, traditional machine learning models (or even just keyword matching) for basic classification. This would be very private and lightweight.
+-   `GeminiProvider`: Uses the Google Gemini API.
+-   `OpenAIProvider`: Uses the OpenAI (GPT) API.
+-   `LocalLLMProvider`: Uses a local large language model (e.g., via Ollama).
+-   `SimpleClassifierProvider`: A non-LLM, local provider using keyword matching or simple ML.
 
 The user can select which provider they want to use in the configuration file, and the AI Insight Engine will load the corresponding module. This makes the AI component of Operion highly modular and user-configurable.
 
