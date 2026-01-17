@@ -13,32 +13,28 @@ The architecture of Operion is designed around three core principles:
 Operion consists of several key components that work together to create an experience that is deeply integrated with the host operating system.
 
 ```text
-+--------------------------------+
-| Desktop Environment (GNOME)    |
-| (Panel Applet, Notifications)  |
-+--------------------------------+
-     ^      | (D-Bus / Commands)
-     | (User Input)
-+---------------------------+
-|     Operion Controller    |
-| (Rules, Policies, Modes)  |
-+---------------------------+
-            | (Events / Commands)
 +---------------------------+      +---------------------------+
-|   System Hooks & Monitors |----->|     AI Insight Engine     |
-| (Apps, Windows, Activity) |      | (Classification & Advice) |
+|     Operion Dashboard     |      | Desktop Environment (GNOME) |
+|   (Analytics & History)   |      | (Panel Applet, Notifications)|
 +---------------------------+      +---------------------------+
-            | (Data)
-+---------------------------+
-|          Storage          |
-|   (SQLite, Config Files)  |
-+---------------------------+
+            ^                           ^      | (D-Bus / Commands)
+            | (Reads DB)                | (User Input)
+            |                      +---------------------------+
+            |                      |     Operion Controller    |
+            |                      | (Rules, Policies, Modes)  |
+            |                      +---------------------------+
+            |                                  | (Events / Commands)
++---------------------------+      +---------------------------+      +---------------------------+
+|          Storage          |<-----|   System Hooks & Monitors |----->|     AI Insight Engine     |
+|   (SQLite, Config Files)  |      | (Apps, Windows, Activity) |      | (Classification & Advice) |
++---------------------------+      +---------------------------+      +---------------------------+
 ```
 
 ### Component Responsibilities:
 
--   **Desktop Environment Integration:** This is not a component we build, but the user's existing desktop environment (initially Zorin OS/GNOME) that we interact with. Operion's "UI" consists of native elements like a panel applet for mode switching and system notifications for feedback. All interactions are handled through OS-native mechanisms.
--   **Operion Controller:** The "brain" of the system. It runs as a background process (or daemon). It reads the user's configuration, maintains the system's current state (i.e., the active mode), and issues commands to the other components (e.g., telling a System Hook to block an app, or telling the Desktop Environment to change the theme).
+-   **Desktop Environment Integration:** The user's existing desktop environment (Zorin OS/GNOME) handles the "Control" UI via a panel applet and system notifications.
+-   **Operion Dashboard:** A standalone application responsible for the "Analytics" UI. It visualizes the data stored in the database, allowing users to explore their habits and view AI insights.
+-   **Operion Controller:** The "brain" of the system. It runs as a background process (or daemon). It reads the user's configuration, maintains the system's current state (i.e., the active mode), and issues commands to the other components.
 -   **System Hooks & Monitors:** A set of OS-specific modules that interact directly with the operating system. They are responsible for tasks like:
     -   Getting the list of running applications.
     -   Identifying the active window and its title.

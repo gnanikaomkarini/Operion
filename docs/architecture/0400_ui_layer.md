@@ -8,17 +8,20 @@ The UI is not a single entity but a collection of interaction points that integr
 
 ## Primary Interaction Points
 
-The user interacts with Operion through the native elements of their desktop:
+The user interacts with Operion through three main interfaces:
 
-1.  **System Panel Applet:** The main entry point is a simple icon in the Zorin/GNOME top panel. Clicking this icon reveals a menu to view the current mode and manually switch to another. This is the primary point of control.
-2.  **Native Notifications:** The system communicates with the user via the desktop's native notification system. This is used for AI Coach summaries, suggesting a mode switch, or warning about a blocked website.
-3.  **Configuration Files:** As before, the deep customization of modes and rules happens by editing human-readable `.yaml` or `.toml` files.
+1.  **System Panel Applet (Control):** The main entry point for *control*. It is a simple icon in the Zorin/GNOME top panel. Clicking this icon reveals a menu to view the current mode and manually switch to another.
+2.  **Operion Dashboard (Analytics):** A separate, dedicated GUI application for *visualization*. This is where the user goes to view detailed charts, activity history, and the full AI Coach reports. It reads data from the storage layer but does not run in the background.
+3.  **Native Notifications (Feedback):** The system communicates real-time feedback via the desktop's native notification system (e.g., suggesting a mode switch, warning about a blocked website).
+4.  **Configuration Files (Setup):** As before, the deep customization of modes and rules happens by editing human-readable `.yaml` or `.toml` files.
 
 ## Decoupling the UI from the Core Logic
 
-The architectural principle of keeping the "UI" and the "core logic" separate remains, but the implementation is different. The **Operion Controller** (the Rust background service) remains the "brain." It contains all the state and business logic.
+The architectural principle of keeping the "UI" and the "core logic" separate remains.
 
-The UI components (panel applet, notifications) are "dumb" clients that react to commands or state changes from the Controller.
+*   **The Operion Controller:** The Rust background service. It is the "brain" that manages state, enforces rules, and writes activity data to the database.
+*   **The Panel Applet:** A "dumb" client that sends commands (like "Switch Mode") to the Controller via D-Bus.
+*   **The Operion Dashboard:** A "read-only" client (for the most part) that queries the SQLite database to visualize the user's history and insights. It does not need to communicate directly with the Controller for most tasks, decoupling the heavy analytics visualization from the critical system loop.
 
 ### Communication Channel
 
